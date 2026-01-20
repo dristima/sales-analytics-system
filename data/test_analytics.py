@@ -5,7 +5,8 @@ from utils.data_processor import calculate_total_revenue, region_wise_sales
 from utils.data_processor import top_selling_products
 from utils.data_processor import customer_analysis
 from utils.data_processor import daily_sales_trend
-
+from utils.data_processor import find_peak_sales_day
+from utils.data_processor import low_performing_products
 
 def main():
     # Step 1: Read raw data
@@ -46,6 +47,17 @@ def main():
     print("\n=== Daily Sales Trend ===")
     for date, stats in daily_summary.items():
         print(f"{date}: {stats}")
+
+    # Peak sales day
+    peak_day = find_peak_sales_day(valid)
+    print("\n=== Peak Sales Day ===")
+    print(peak_day)
+
+    # Low performing products
+    low_products = low_performing_products(valid, threshold=10)
+    print("\n=== Low Performing Products ===")
+    for product, qty, revenue in low_products:
+        print(f"{product}: Quantity={qty}, Revenue={revenue}")
 
 if __name__ == "__main__":
     main()

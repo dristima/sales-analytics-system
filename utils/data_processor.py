@@ -196,3 +196,89 @@ def daily_sales_trend(transactions):
     sorted_daily_stats = dict(sorted(daily_stats.items(), key=lambda x: x[0]))
 
     return sorted_daily_stats
+
+def find_peak_sales_day(transactions):
+    """
+    Identifies the date with highest revenue.
+
+    Returns: tuple (date, revenue, transaction_count)
+
+    Expected Output Format:
+    ('2024-12-15', 185000.0, 12)
+    """
+    daily_stats = {}
+
+    # Step 1: Aggregate revenue and transaction count per date
+    for t in transactions:
+        try:
+            date = t.get("Date", "Unknown")
+            qty = int(t.get("Quantity", 0))
+            price = float(t.get("UnitPrice", 0.0))
+            revenue = qty * price
+
+            if date not in daily_stats:
+                daily_stats[date] = {"revenue": 0.0, "transaction_count": 0}
+
+            daily_stats[date]["revenue"] += revenue
+            daily_stats[date]["transaction_count"] += 1
+        except (ValueError, TypeError):
+            continue
+
+    # Step 2: Find the date with maximum revenue
+    if not daily_stats:
+        return None  # handle case when no transactions
+
+    peak_date, peak_stats = max(
+        daily_stats.items(), key=lambda x: x[1]["revenue"]
+    )
+
+    return (peak_date, peak_stats["revenue"], peak_stats["transaction_count"])
+
+def low_performing_products(transactions, threshold=10):
+    """
+    Identifies products with low sales.
+
+    Returns: list of tuples
+
+    Expected Output Format:
+    [
+        ('Webcam', 4, 12000.0),  # (ProductName, TotalQuantity, TotalRevenue)
+        ('Headphones', 7, 10500.0),
+        ...
+    ]
+
+    Requirements:
+    - Find products with total quantity < threshold
+    - Include total quantity and revenue
+    - Sort by TotalQuantity ascending
+    """
+    product_stats = {}
+
+    # Step 1: Aggregate stats per product
+    for t in transactions:
+        try:
+            qty = int(t.get("Quantity", 0))
+            price = float(t.get("UnitPrice", 0.0))
+            revenue = qty * price
+            product = t.get("ProductName", "Unknown")
+
+            if product not in product_stats:
+                product_stats[product] = {"total_qty": 0, "total_revenue": 0.0}
+
+            product_stats[product]["total_qty"] += qty
+            product_stats[product]["total_revenue"] += revenue
+        except (ValueError, TypeError):
+            continue
+
+    # Step 2: Filter products below threshold
+    low_products = [
+        (product, stats["total_qty"], stats["total_revenue"])
+        for product, stats in product_stats.items()
+        if stats["total_qty"] < threshold
+    ]
+
+    # Step 3: Sort by total quantity ascending
+    low_products_sorted = sorted(low_products, key=lambda x: x[1])
+
+    return low_products_sorted
+    
