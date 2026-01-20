@@ -2,6 +2,7 @@ from utils.file_handler import read_sales_data
 from utils.parser import parse_transactions
 from utils.validator import validate_and_filter
 from utils.data_processor import calculate_total_revenue, region_wise_sales
+from utils.data_processor import top_selling_products
 
 def main():
     # Step 1: Read raw data
@@ -25,6 +26,11 @@ def main():
     print("\n=== Region-wise Sales ===")
     for region, stats in region_summary.items():
         print(f"{region}: {stats}")
+
+    top_products = top_selling_products(valid, n=5)
+    print("\n=== Top Selling Products ===")
+    for product, qty, revenue in top_products:
+        print(f"{product}: Quantity={qty}, Revenue={revenue}")
 
 if __name__ == "__main__":
     main()

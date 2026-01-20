@@ -51,3 +51,57 @@ def region_wise_sales(transactions):
     )
 
     return sorted_stats
+
+
+def top_selling_products(transactions, n=5):
+    """
+    Finds top n products by total quantity sold.
+
+    Returns: list of tuples
+
+    Expected Output Format:
+    [
+        ('Laptop', 45, 2250000.0),  # (ProductName, TotalQuantity, TotalRevenue)
+        ('Mouse', 38, 19000.0),
+        ...
+    ]
+
+    Requirements:
+    - Aggregate by ProductName
+    - Calculate total quantity sold
+    - Calculate total revenue for each product
+    - Sort by TotalQuantity descending
+    - Return top n products
+    """
+    product_stats = {}
+
+    # Step 1: Aggregate by product
+    for t in transactions:
+        try:
+            qty = int(t.get("Quantity", 0))
+            price = float(t.get("UnitPrice", 0.0))
+            revenue = qty * price
+            product = t.get("ProductName", "Unknown")
+
+            if product not in product_stats:
+                product_stats[product] = {"total_qty": 0, "total_revenue": 0.0}
+
+            product_stats[product]["total_qty"] += qty
+            product_stats[product]["total_revenue"] += revenue
+        except (ValueError, TypeError):
+            continue
+
+    # Step 2: Sort by total quantity sold (descending)
+    sorted_products = sorted(
+        product_stats.items(),
+        key=lambda x: x[1]["total_qty"],
+        reverse=True
+    )
+
+    # Step 3: Build result list of tuples
+    top_products = [
+        (product, stats["total_qty"], stats["total_revenue"])
+        for product, stats in sorted_products[:n]
+    ]
+
+    return top_products
