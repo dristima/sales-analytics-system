@@ -7,6 +7,10 @@ from utils.data_processor import customer_analysis
 from utils.data_processor import daily_sales_trend
 from utils.data_processor import find_peak_sales_day
 from utils.data_processor import low_performing_products
+from utils.api_handler import fetch_products
+from utils.api_handler import fetch_product_by_id
+from utils.api_handler import fetch_products
+from utils.api_handler import search_products
 
 def main():
     # Step 1: Read raw data
@@ -58,6 +62,37 @@ def main():
     print("\n=== Low Performing Products ===")
     for product, qty, revenue in low_products:
         print(f"{product}: Quantity={qty}, Revenue={revenue}")
+
+    # All products API
+    products, total = fetch_products(limit=100)  # get all products
+    print(f"Total products available: {total}")
+    print(f"Products fetched: {len(products)}")
+
+    for p in products:
+        print(f"{p['id']}: {p['title']} - ${p['price']}")
+
+
+    # Product by Id
+    product = fetch_product_by_id(1)  # get product with ID=1
+    print("=== Single Product ===")
+    print(f"{product['id']}: {product['title']}")
+
+    # Get 100 products
+    products, total = fetch_products(limit=100)
+    print(f"Total products available: {total}")
+    print(f"Products fetched: {len(products)}")
+
+    # Print first 5 products
+    for p in products[:5]:
+        print(f"{p['id']}: {p['title']} - ${p['price']}")
+
+    # Search product
+    results = search_products("phone")
+    print(f"Products found: {len(results)}")
+
+    for p in results:
+        print(f"{p['id']}: {p['title']} - ${p['price']}")
+   
 
 if __name__ == "__main__":
     main()
