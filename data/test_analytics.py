@@ -4,6 +4,7 @@ from utils.validator import validate_and_filter
 from utils.data_processor import calculate_total_revenue, region_wise_sales
 from utils.data_processor import top_selling_products
 from utils.data_processor import customer_analysis
+from utils.data_processor import daily_sales_trend
 
 
 def main():
@@ -39,6 +40,12 @@ def main():
     print("\n=== Customer Analysis ===")
     for customer, stats in customer_summary.items():
         print(f"{customer}: {stats}")
+
+    # Daily sales trend
+    daily_summary = daily_sales_trend(valid)
+    print("\n=== Daily Sales Trend ===")
+    for date, stats in daily_summary.items():
+        print(f"{date}: {stats}")
 
 if __name__ == "__main__":
     main()
