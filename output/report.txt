@@ -1,0 +1,9 @@
+Total records: 80
+Total revenue: 3,578,094.00
+Revenue by region:
+  South: 896,796.00
+  East: 465,674.00
+  North: 1,346,375.00
+  West: 856,852.00
+  Unknown: 12,397.00
+Best-selling product: Laptop,Premium (2,069,871.00)
