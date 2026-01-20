@@ -65,13 +65,6 @@ def top_selling_products(transactions, n=5):
         ('Mouse', 38, 19000.0),
         ...
     ]
-
-    Requirements:
-    - Aggregate by ProductName
-    - Calculate total quantity sold
-    - Calculate total revenue for each product
-    - Sort by TotalQuantity descending
-    - Return top n products
     """
     product_stats = {}
 
@@ -104,4 +97,52 @@ def top_selling_products(transactions, n=5):
         for product, stats in sorted_products[:n]
     ]
 
-    return top_products
+    return top_products   # ✅ fixed return
+
+
+def customer_analysis(transactions):
+    """
+    Analyzes customer purchase patterns.
+
+    Returns: dictionary of customer statistics
+    """
+    customer_stats = {}
+
+    # Step 1: Aggregate stats per customer
+    for t in transactions:
+        try:
+            customer_id = t.get("CustomerID", "Unknown")
+            qty = int(t.get("Quantity", 0))
+            price = float(t.get("UnitPrice", 0.0))
+            revenue = qty * price
+            product = t.get("ProductName", "Unknown")
+
+            if customer_id not in customer_stats:
+                customer_stats[customer_id] = {
+                    "total_spent": 0.0,
+                    "purchase_count": 0,
+                    "products_bought": set()
+                }
+
+            customer_stats[customer_id]["total_spent"] += revenue
+            customer_stats[customer_id]["purchase_count"] += 1
+            customer_stats[customer_id]["products_bought"].add(product)
+        except (ValueError, TypeError):
+            continue
+
+    # Step 2: Calculate average order value and convert products_bought to list
+    for customer, stats in customer_stats.items():
+        if stats["purchase_count"] > 0:
+            stats["avg_order_value"] = round(
+                stats["total_spent"] / stats["purchase_count"], 2
+            )
+        else:
+            stats["avg_order_value"] = 0.0
+        stats["products_bought"] = list(stats["products_bought"])
+
+    # Step 3: Sort by total_spent descending
+    sorted_customers = dict(
+        sorted(customer_stats.items(), key=lambda x: x[1]["total_spent"], reverse=True)
+    )
+
+    return sorted_customers

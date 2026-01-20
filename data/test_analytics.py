@@ -3,6 +3,8 @@ from utils.parser import parse_transactions
 from utils.validator import validate_and_filter
 from utils.data_processor import calculate_total_revenue, region_wise_sales
 from utils.data_processor import top_selling_products
+from utils.data_processor import customer_analysis
+
 
 def main():
     # Step 1: Read raw data
@@ -31,6 +33,12 @@ def main():
     print("\n=== Top Selling Products ===")
     for product, qty, revenue in top_products:
         print(f"{product}: Quantity={qty}, Revenue={revenue}")
+
+    # Customer analysis
+    customer_summary = customer_analysis(valid)
+    print("\n=== Customer Analysis ===")
+    for customer, stats in customer_summary.items():
+        print(f"{customer}: {stats}")
 
 if __name__ == "__main__":
     main()
